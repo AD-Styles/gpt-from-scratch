@@ -91,7 +91,7 @@ ChatGPT 같은 LLM의 핵심 구조인 **Decoder-only Transformer**를 PyTorch�
 
 ## 📊 학습 결과 (Training Results)
 
-학습은 nanoGPT의 표준 char-level 설정과 동일하게 **5000 iterations**으로 진행. 학습 곡선의 전형적인 흐름(빠른 초기 감소 → val 최저점 → overfitting 진입)을 한 번에 모두 관찰할 수 있는 충분한 분량.
+학습은 nanoGPT의 표준 char-level 설정과 동일하게 **5000 iterations**으로 진행. 학습 곡선의 전형적인 흐름 <br>(빠른 초기 감소 → val 최저점 → overfitting 진입)을 한 번에 모두 관찰할 수 있는 충분한 분량.
 
 | Iteration | Train Loss | Val Loss | 비고 |
 |-----------|-----------|----------|------|
