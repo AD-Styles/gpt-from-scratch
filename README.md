@@ -19,7 +19,7 @@ ChatGPT 같은 LLM의 핵심 구조인 **Decoder-only Transformer**를 PyTorch�
 ## 📂 프로젝트 구조 (Project Structure)
 
 ```
-28. gpt-from-scratch/
+gpt-from-scratch/
 ├── results/
 │   ├── 01_dataset_overview.png          # 문자 빈도 + 데이터셋 통계 + 샘플 텍스트
 │   ├── 02_attention_visualization.png   # 6 head × 2 layer attention 패턴 비교 (early vs late)
