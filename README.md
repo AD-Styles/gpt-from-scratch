@@ -116,7 +116,7 @@ ChatGPT 같은 LLM의 핵심 구조인 **Decoder-only Transformer**를 PyTorch�
 
 ![Dataset Overview](results/01_dataset_overview.png)
 
-Tiny Shakespeare는 약 1.1M characters의 작은 데이터셋입니다. 빈도 분포를 보면 공백(`␣`), `e`, `t`, `o` 순으로 일반적인 영어 분포와 거의 같습니다. 우측 샘플 텍스트의 `NAME:\n대사` 형식이 모델이 가장 먼저 학습할 가장 명확한 패턴입니다.
+Tiny Shakespeare는 약 1.1M characters의 작은 데이터셋입니다. 빈도 분포를 보면 공백(`␣`), `e`, `t`, `o` 순으로 일반적인 <br>영어 분포와 거의 같습니다. 우측 샘플 텍스트의 `NAME:\n대사` 형식이 모델이 가장 먼저 학습할 가장 명확한 패턴입니다.
 
 <br>
 
