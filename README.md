@@ -11,7 +11,7 @@
 ## 📌 프로젝트 요약 (Project Summary)
 
 ChatGPT 같은 LLM의 핵심 구조인 **Decoder-only Transformer**를 PyTorch로 처음부터 직접 구현해본 프로젝트입니다. PyTorch에 이미 있는 `nn.MultiheadAttention` 같은
-고수준 API를 일부러 사용하지 않고, 어텐션의 핵심인 Query/Key/Value 분할부터 멀티헤드 reshape, causal mask까지 모두 손으로 작성했습니다. "어텐션이 어떻게 동작하는
+고수준 API를 일부러 사용하지 않고, 어텐션의 핵심인 Query/Key/Value <br>분할부터 멀티헤드 reshape, causal mask까지 모두 손으로 작성했습니다. "어텐션이 어떻게 동작하는
 지"를 코드 레벨에서 손에 익히는 것이 1차 목표였고, 구조는 nanoGPT를 참고했습니다.
 
 데이터셋은 셰익스피어 작품집을 이어붙인 **Tiny Shakespeare**(약 1.1M 문자)이며, 토크나이저도 외부 라이브러리 없이 등장 문자 65개로 직접 구성했습니다. 학습 후에는 학습
