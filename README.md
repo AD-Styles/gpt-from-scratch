@@ -10,56 +10,25 @@ ChatGPT 같은 LLM의 핵심 구조인 **Decoder-only Transformer**를 PyTorch�
 
 데이터셋은 셰익스피어 작품집을 이어붙인 **Tiny Shakespeare**(약 1.1M 문자)이며, 토크나이저도 외부 라이브러리 없이 등장 문자 65개로 직접 구성했습니다. 학습 후에는 학습된 어텐션 패턴, 학습 진행에 따른 생성 결과 변화, 그리고 샘플링 전략(greedy / temperature / top-k)에 따른 차이까지 5개의 시각화로 정리했습니다.
 
-### 한눈에 보기 (At a Glance)
-
-| 항목 | 값 |
-|------|------|
-| 모델 크기 | **10.79M** parameters |
-| 학습 데이터 | Tiny Shakespeare (1.1M chars) |
-| 학습 환경 | RTX 4060 Laptop (8GB VRAM) |
-| 학습 시간 | **32분** / 5000 iterations |
-| 토크나이저 | character-level (vocab 65, BPE 미사용) |
-| 최저 Val Loss | 1.4680 @ iter 1500 |
-
-**학습 전 vs 학습 후 생성 결과**
-
-```text
-[Iter 0]     dF3u :C;RntbzDP'CnT&RFt'uYoUddXRaDnq3Uk,XY:ycGJ,uuHyZDImxEP...
-             → 무작위 초기화 상태, 의미 없는 문자열
-
-[Iter 5000]  ROMEO:
-             Where is the churchyard? there were my father's child.
-
-             BENVOLIO:
-             The garlant, that thou madst bear my heart.
-             → 셰익스피어 특유의 형식·운율·고어 표현까지 학습
-```
-
 ---
 
 ## 📂 프로젝트 구조 (Project Structure)
 
 ```
 28. gpt-from-scratch/
-├── src/
-│   └── main.py                          # GPT 모델 + 학습 루프 + 시각화 통합 스크립트
-├── data/
-│   ├── tinyshakespeare.txt              # Karpathy char-rnn 레포에서 자동 다운로드
-│   └── checkpoint.pt                    # 학습된 모델 + history (재학습 스킵용, 자동 생성)
 ├── results/
 │   ├── 01_dataset_overview.png          # 문자 빈도 + 데이터셋 통계 + 샘플 텍스트
 │   ├── 02_attention_visualization.png   # 6 head × 2 layer attention 패턴 비교 (early vs late)
 │   ├── 03_training_curve.png            # Train / Val loss + LR 스케줄 + Val 최저점·Overfitting Zone
 │   ├── 04_generation_progression.png    # Iter 0 / 2500 / 5000 생성 샘플 (컬러 라벨)
 │   └── 05_sampling_comparison.png       # Greedy / Temperature / Top-k 결과 비교 (특성 태그 포함)
+├── src/
+│   └── main.py                          # GPT 모델 + 학습 루프 + 시각화 통합 스크립트
+├── .gitignore
+├── LICENSE
 ├── README.md
 └── requirements.txt
 ```
-
-> **실행 옵션**
-> - `python src/main.py` — checkpoint가 있으면 학습 스킵, 없으면 학습 후 저장
-> - `python src/main.py --retrain` — 강제 재학습
-> - `python src/main.py --viz-only` — 시각화만 다시 그리기 (빠름).
 
 ---
 
@@ -69,13 +38,13 @@ ChatGPT 같은 LLM의 핵심 구조인 **Decoder-only Transformer**를 PyTorch�
 |------|-----------|
 | **토크나이저 (Tokenizer)** | 외부 라이브러리 없이 등장 문자 65개로 직접 구성 (char-level) |
 | **임베딩 (Embedding)** | 각 문자를 384차원 벡터로 변환 + 위치 정보 추가 |
-| **Causal Self-Attention** | 미래 글자를 보지 못하도록 차단한 어텐션 (텍스트 생성의 핵심) |
-| **Multi-Head Attention** | 같은 입력을 6개의 "관점(head)"으로 동시에 분석 |
-| **잔차 연결 + LayerNorm** | 깊은 네트워크의 학습 안정화 장치 |
-| **Feed-Forward Network** | 어텐션 후 정보를 더 풍부하게 변환하는 두 층짜리 MLP |
-| **다음 글자 예측 손실** | "이전 텍스트를 보고 다음 글자를 맞추는" cross-entropy 학습 |
-| **학습률 스케줄링** | 워밍업 100 iter 후 코사인 감쇠 (안정적 수렴) |
-| **샘플링 전략** | Greedy / Temperature / Top-k — 같은 모델, 다른 "성격" |
+| **인과적 셀프 어텐션 (Causal Self-Attention)** | 미래 글자를 보지 못하도록 차단한 어텐션 (텍스트 생성의 핵심) |
+| **멀티헤드 어텐션 (Multi-Head Attention)** | 같은 입력을 6개의 "관점(head)"으로 동시에 분석 |
+| **잔차 연결 + 레이어 정규화 (Residual + LayerNorm)** | 깊은 네트워크의 학습 안정화 장치 |
+| **피드포워드 네트워크 (Feed-Forward Network)** | 어텐션 후 정보를 더 풍부하게 변환하는 두 층짜리 MLP |
+| **다음 글자 예측 손실 (Next-Token Prediction Loss)** | "이전 텍스트를 보고 다음 글자를 맞추는" cross-entropy 학습 |
+| **학습률 스케줄링 (Learning Rate Scheduling)** | 워밍업 100 iter 후 코사인 감쇠 (안정적 수렴) |
+| **샘플링 전략 (Sampling Strategy)** | Greedy / Temperature / Top-k — 같은 모델, 다른 "성격" |
 
 ---
 
@@ -89,7 +58,7 @@ ChatGPT 같은 LLM의 핵심 구조인 **Decoder-only Transformer**를 PyTorch�
 ┌─────────────────────────────────────────────────┐
 │  Transformer Block × 6                          │
 │   ├ LayerNorm → Causal Self-Attention → +residual│
-│   │            (6 heads × head_dim 64)          │
+│   │            (6 heads × head dim 64)          │
 │   └ LayerNorm → MLP (384 → 1536 → 384) → +residual│
 └─────────────────────────────────────────────────┘
    ↓
@@ -115,7 +84,7 @@ ChatGPT 같은 LLM의 핵심 구조인 **Decoder-only Transformer**를 PyTorch�
 
 ## 📊 학습 결과 (Training Results)
 
-학습은 nanoGPT의 표준 char-level 설정과 동일하게 **5000 iterations**으로 진행했습니다. 학습 곡선의 전형적인 흐름(빠른 초기 감소 → val 최저점 → overfitting 진입)을 한 번에 모두 관찰할 수 있어서 시각화 자료로 충분하다고 판단했습니다.
+학습은 nanoGPT의 표준 char-level 설정과 동일하게 **5000 iterations**으로 진행. 학습 곡선의 전형적인 흐름(빠른 초기 감소 → val 최저점 → overfitting 진입)을 한 번에 모두 관찰할 수 있는 충분한 분량.
 
 | Iteration | Train Loss | Val Loss | 비고 |
 |-----------|-----------|----------|------|
@@ -134,13 +103,17 @@ ChatGPT 같은 LLM의 핵심 구조인 **Decoder-only Transformer**를 PyTorch�
 
 ## 🔍 시각화 결과 분석 (Visualization Analysis)
 
-### 1) Dataset Overview
+### 1. Dataset Overview (데이터셋 개요)
 
 ![Dataset Overview](results/01_dataset_overview.png)
 
 Tiny Shakespeare는 약 1.1M characters의 작은 데이터셋입니다. 빈도 분포를 보면 공백(`␣`), `e`, `t`, `o` 순으로 일반적인 영어 분포와 거의 같습니다. 우측 샘플 텍스트의 `NAME:\n대사` 형식이 모델이 가장 먼저 학습할 가장 명확한 패턴입니다.
 
-### 2) Multi-Head Attention Patterns: Early vs Late Layer
+특히 두 가지 점이 흥미롭습니다 — **첫째, 공백이 압도적으로 많은 분포는** char-level 모델 입장에서 "단어 경계가 어디인가"를 학습하는 것 자체가 학습 비중의 큰 자리를 차지한다는 뜻입니다 (BPE 같은 sub-word 토크나이저라면 이 부담이 거의 없음). **둘째, 1.1M이라는 규모는** GPT-3 학습 데이터(~570GB)의 약 50만분의 1 수준이라 모델이 셰익스피어를 진짜 "이해"하기엔 부족하고, **형식·운율·어휘 분포 모방까지가 학습 한계**입니다.
+
+<br>
+
+### 2. Multi-Head Attention Patterns: Early vs Late Layer (멀티헤드 어텐션 패턴: 초기 vs 마지막 레이어)
 
 ![Attention Visualization](results/02_attention_visualization.png)
 
@@ -151,7 +124,9 @@ Tiny Shakespeare는 약 1.1M characters의 작은 데이터셋입니다. 빈도 
 
 → Layer가 깊어지면서 attention이 **단순 → 복잡 / 지역적 → 전역적**으로 변하는 것이 한눈에 보입니다.
 
-### 3) Training Curve — Loss & LR Schedule
+<br>
+
+### 3. Training Curve — Loss & LR Schedule (학습 곡선 — 손실과 학습률 스케줄)
 
 ![Training Curve](results/03_training_curve.png)
 
@@ -164,7 +139,9 @@ Loss 곡선에 핵심 포인트를 직접 표시하고, **보조 축으로 학�
 
 iter 0~500에서 4.32 → 1.5로 급감한 뒤, iter 1500에서 val 최저점을 찍고, 이후 train만 계속 0.64까지 떨어지며 val은 1.68까지 상승하는 명확한 overfitting 패턴을 보여줍니다. **워밍업이 끝나고 LR이 최대(1e-3)일 때 loss가 가장 빨리 떨어지는 것**도 한눈에 보입니다.
 
-### 4) Generation Progression
+<br>
+
+### 4. Generation Progression (생성 결과 변화)
 
 ![Generation Progression](results/04_generation_progression.png)
 
@@ -174,7 +151,9 @@ iter 0~500에서 4.32 → 1.5로 급감한 뒤, iter 1500에서 val 최저점을
 - **Iter 2500** (주황) — 형식 학습 완료 (이름: 대사 패턴): `YORK:`, `WARWICK:`, `QUEEN MARGARET:` 처럼 실제 셰익스피어 등장인물 이름과 `이름:\n대사` 형식을 완전히 학습
 - **Iter 5000** (녹색) — 긴 문장 + 운율 + 셰익스피어 스타일: `Shall, knock any years good colours and came already.` 처럼 더 긴 문장과 도치/고어 표현 등장. Val loss는 올라갔지만 사람이 읽기엔 가장 그럴듯한 결과
 
-### 5) Sampling Strategy Comparison
+<br>
+
+### 5. Sampling Strategy Comparison (샘플링 전략 비교)
 
 ![Sampling Comparison](results/05_sampling_comparison.png)
 
@@ -196,7 +175,7 @@ iter 0~500에서 4.32 → 1.5로 급감한 뒤, iter 1500에서 val 최저점을
 
 처음 이 프로젝트를 시작하면서 가장 고민했던 건 "어디까지 직접 구현할 것인가" 였습니다. PyTorch에는 `nn.MultiheadAttention`이 이미 있고, PyTorch 2.0부터는 `F.scaled_dot_product_attention`도 있어서 호출 한 줄로 멀티헤드 어텐션을 끝낼 수 있습니다. 그런데 그렇게 짜고 나니 "어텐션이 안에서 정확히 어떻게 동작하는지"를 자신 있게 설명할 자신이 없었습니다. 결국 Q/K/V를 한 번의 Linear로 묶고 split해서 풀고, head 차원으로 reshape하는 모든 디테일을 손으로 직접 작성했습니다. 짜고 나니 어텐션의 동작이 손에 잡히는 느낌이 들었습니다.
 
-학습 곡선에서 가장 인상 깊었던 건 overfitting이 시작되는 시점이었습니다. 약 iter 1500을 기점으로 val loss가 1.48로 바닥을 친 뒤 점점 올라가는데, train loss는 계속 내려가서 마지막엔 0.63까지 떨어졌습니다. 5000 iter를 다 돌릴지 1500에서 멈출지 잠시 고민했지만, 학습 곡선의 양상 자체가 보여줄 가치가 있다고 판단해서 끝까지 갔습니다. 더 흥미로운 건 val loss가 올라갔는데도 사람이 읽기엔 iter 5000의 생성 결과가 더 그럴듯해 보인다는 점이었습니다. **숫자 지표와 사람이 느끼는 "텍스트의 그럴듯함"이 항상 일치하지 않는다는 것**을 직접 확인한 셈입니다.
+학습 곡선에서 가장 인상 깊었던 건 overfitting이 시작되는 시점이었습니다. 약 iter 1500을 기점으로 val loss가 1.47로 바닥을 친 뒤 점점 올라가는데, train loss는 계속 내려가서 마지막엔 0.64까지 떨어졌습니다. 5000 iter를 다 돌릴지 1500에서 멈출지 잠시 고민했지만, 학습 곡선의 양상 자체가 보여줄 가치가 있다고 판단해서 끝까지 갔습니다. 더 흥미로운 건 val loss가 올라갔는데도 사람이 읽기엔 iter 5000의 생성 결과가 더 그럴듯해 보인다는 점이었습니다. **숫자 지표와 사람이 느끼는 "텍스트의 그럴듯함"이 항상 일치하지 않는다는 것**을 직접 확인한 셈입니다.
 
 어텐션 시각화는 직접 학습한 head를 그려보고 싶어서 추가했습니다. 처음에는 첫 블록 head 0만 그려봤는데, 거의 완벽한 대각선이 보여서 약간 놀랐습니다 — "직전 글자를 강하게 참조하라"는 명시적 규칙을 준 적이 없는데도 데이터가 자연스럽게 그 패턴을 만들었기 때문입니다. 거기서 한 발 더 나아가 첫 번째 블록과 마지막 블록의 6개 head를 모두 같이 그려봤더니, 더 인상적이었습니다. 초반 layer의 head들은 대부분 대각선 또는 좁은 local 패턴인 반면, 마지막 layer는 모든 head가 **첫 번째 토큰에 강하게 집중하면서 시퀀스 곳곳에 sparse하게 분산**되는 패턴을 보였습니다. 이게 "Attention Sink"라고 불리는 현상이라는 걸 나중에 알게 됐는데, 작은 모델에서도 그 현상이 명확하게 재현되는 게 신기했습니다.
 
