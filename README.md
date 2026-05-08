@@ -59,7 +59,7 @@ ChatGPT 같은 LLM의 핵심 구조인 **Decoder-only Transformer**를 PyTorch�
 > **실행 옵션**
 > - `python src/main.py` — checkpoint가 있으면 학습 스킵, 없으면 학습 후 저장
 > - `python src/main.py --retrain` — 강제 재학습
-> - `python src/main.py --viz-only` — 시각화만 다시 그리기 (빠름)
+> - `python src/main.py --viz-only` — 시각화만 다시 그리기 (빠름).
 
 ---
 
