@@ -105,7 +105,7 @@ ChatGPT 같은 LLM의 핵심 구조인 **Decoder-only Transformer**를 PyTorch�
 **핵심 관찰 (Key Observations)**
 
 - 초기 loss `4.32`는 무작위 추측의 이론값 `ln(65) ≈ 4.17`과 거의 일치 → 학습 전 모델은 정말로 아무것도 모름
-- Val loss는 **iter 1500에서 최저점(1.47)**을 찍은 후 점진적으로 상승 (overfitting).
+- Val loss는 **iter 1500에서 최저점(1.47)**을 찍은 후 점진적으로 상승 (overfitting)
 - 다만 사람이 보는 텍스트 품질은 iter 5000이 더 좋음 → **loss 수치와 인간 평가가 항상 일치하지는 않는다**
 
 ---
