@@ -1,12 +1,10 @@
 # 🧠 GPT from Scratch
-
+### Tiny Shakespeare 데이터셋으로 character-level 텍스트 생성을 학습하는, PyTorch로 직접 구현한 Decoder-only Transformer 언어모델.
 ![Python](https://img.shields.io/badge/Python-3.8+-3776AB?logo=python&logoColor=white)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C?logo=pytorch&logoColor=white)
 ![CUDA](https://img.shields.io/badge/CUDA-Enabled-76B900?logo=nvidia&logoColor=white)
 ![From Scratch](https://img.shields.io/badge/Implementation-From_Scratch-black)
 ![Inspired](https://img.shields.io/badge/Inspired_by-nanoGPT-orange)
-
-### Tiny Shakespeare 데이터셋으로 character-level 텍스트 생성을 학습하는, PyTorch로 직접 구현한 Decoder-only Transformer 언어모델.
 
 ---
 
